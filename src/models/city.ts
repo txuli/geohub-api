@@ -37,6 +37,7 @@ const citySchema = new mongoose.Schema(
         }
     }
 )
+citySchema.index({ location: '2dsphere' })
 const City = mongoose.model("cities", citySchema, "Cities");
 
 
