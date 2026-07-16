@@ -6,7 +6,8 @@ import { routes } from "./routes";
 import rateLimiter from "./middlewares/ratelimit";
 import { log } from "discord-logify";
 const app = express();
-app.use(cors());
+/* app.use(cors()); */
+
 app.use(express.json());
 app.use(rateLimiter)
 app.set('trust proxy', true);
