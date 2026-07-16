@@ -12,8 +12,10 @@ import { log } from 'discord-logify';
 const logger = new log()
 const nearme = async (req: Request, res: Response, next: NextFunction) => {
     const maxDistance = req.query.max ? req.query.max : 100000
-    const forwardedFor = req.headers['x-forwarded-for'];
-    const ip = (typeof forwardedFor === 'string' ? forwardedFor : '').split(',')[0];
+    const ip = req.ip?.replace(/^::ffff:/, '') ?? ''
+    if (!ip || ip === '127.0.0.1' || ip === '::1') {
+        return res.status(400).json({ error: "Could not determine your IP address" })
+    }
     const coords = await fetch('http://ip-api.com/json/' + ip, {
         headers: {
             'User-Agent': 'curl/7.79.1'
@@ -21,6 +23,9 @@ const nearme = async (req: Request, res: Response, next: NextFunction) => {
     })
 
     const coordsResponse = (await coords.json()) as response
+    if (!coordsResponse.lat || !coordsResponse.lon) {
+        return res.status(400).json({ error: "Could not resolve location for your IP" })
+    }
 
     connection
 
