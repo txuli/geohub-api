@@ -32,5 +32,8 @@
     "start": "bun run src/index.ts",
     "pm2:rs": "pm2 restart findaCity --update-env",
     "pm2:stop": "pm2 delete findaCity"
+  },
+  "overrides": {
+    "bson": "7.2.0"
   }
 }
