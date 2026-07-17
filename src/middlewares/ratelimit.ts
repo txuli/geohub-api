@@ -5,10 +5,11 @@ import type { Request, Response, NextFunction } from "express";
 import { Alert } from '../utils/logger';
 import { redisClient } from "../config/db";
 const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
+    const cfConnectingIp = req.headers['cf-connecting-ip'];
     const xff = req.headers['x-forwarded-for'];
-    const ipFromHeader = (typeof xff === 'string' ? xff : '')?.split(",")[0]?.trim() || "";
+    const ipFromXff = (typeof xff === 'string' ? xff : '')?.split(",")[0]?.trim() || "";
 
-    const ip = ipFromHeader || req.ip || '0.0.0.0';
+    const ip = (typeof cfConnectingIp === 'string' ? cfConnectingIp : "") || ipFromXff || req.ip || '0.0.0.0';
     
     if(ip=="::1") return next()
     const ratelimit = new RateLimiterRedis({
