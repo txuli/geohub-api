@@ -28,7 +28,7 @@ const nearme = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     connection
-
+    console.log(coordsResponse.lon, coordsResponse.lat)
     const result = await City.find({
         location: {
             $near: {
