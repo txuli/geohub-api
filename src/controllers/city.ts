@@ -12,7 +12,9 @@ import { log } from 'discord-logify';
 const logger = new log()
 const nearme = async (req: Request, res: Response, next: NextFunction) => {
     const maxDistance = req.query.max ? req.query.max : 100000
-    const ip = req.ip?.replace(/^::ffff:/, '') ?? ''
+    const cfConnectingIp = req.headers['cf-connecting-ip']
+    const rawIp = typeof cfConnectingIp === 'string' ? cfConnectingIp : req.ip
+    const ip = rawIp?.replace(/^::ffff:/, '') ?? ''
     if (!ip || ip === '127.0.0.1' || ip === '::1') {
         return res.status(400).json({ error: "Could not determine your IP address" })
     }
